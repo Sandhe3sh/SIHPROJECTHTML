@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renewable Energy Monitoring System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .login-card h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .link-btn {
+            background: transparent;
+            color: #667eea;
+            text-decoration: underline;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dashboard-content {
+            padding: 30px 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
+        .stat-title {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stat-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-charging {
+            background: #e8f5e8;
+            color: #4CAF50;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-critical {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .alerts-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .alerts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-left: 4px solid;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+            transition: background 0.3s;
+        }
+
+        .alert-item:hover {
+            background: #f8f9fa;
+        }
+
+        .alert-warning {
+            border-color: #ffc107;
+            background: #fff8e1;
+        }
+
+        .alert-info {
+            border-color: #17a2b8;
+            background: #e1f5fe;
+        }
+
+        .alert-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .alert-content h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Admin Dashboard Specific */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <span class="logo">⚡</span>
+            <h2>Renewable Energy Monitoring System</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userType">Login as</label>
+                    <select id="userType" required>
+                        <option value="">Select role</option>
+                        <option value="user">Community User</option>
+                        <option value="admin">System Administrator</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Login</button>
+                <button type="button" class="link-btn" onclick="showRegister()">Don't have an account? Register here</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="registerPage" class="login-container hidden">
+        <div class="login-card">
+            <span class="logo">⚡</span>
+            <h2>Create Account</h2>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regUserType">Register as</label>
+                    <select id="regUserType" required>
+                        <option value="">Select role</option>
+                        <option value="user">Community User</option>
+                        <option value="admin">System Administrator</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Register</button>
+                <button type="button" class="link-btn" onclick="showLogin()">Already have an account? Login here</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userDashboard" class="dashboard">
+        <div class="header">
+            <div class="header-content">
+                <h1>🏠 Community Energy Dashboard</h1>
+                <div class="user-info">
+                    <span id="userWelcome">Welcome, User</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Solar Generation</div>
+                        <div class="stat-icon">☀️</div>
+                    </div>
+                    <div class="stat-value">4.2 kW</div>
+                    <div class="stat-subtitle">Today: 22 kWh</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Battery Storage</div>
+                        <div class="stat-icon">🔋</div>
+                    </div>
+                    <div class="stat-value">65%</div>
+                    <div class="stat-subtitle">
+                        <span class="status-badge status-charging">Charging</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Current Load</div>
+                        <div class="stat-icon">🏠</div>
+                    </div>
+                    <div class="stat-value">3.5 kW</div>
+                    <div class="stat-subtitle">Today: 18 kWh consumed</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Grid Status</div>
+                        <div class="stat-icon">⚡</div>
+                    </div>
+                    <div class="stat-value">Online</div>
+                    <div class="stat-subtitle">
+                        <span class="status-badge status-charging">Stable</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alerts-section">
+                <div class="alerts-header">
+                    <h3>🔔 System Notifications</h3>
+                    <span class="status-badge status-warning">2 Active</span>
+                </div>
+                
+                <div class="alert-item alert-warning">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <h4>Weather Advisory</h4>
+                        <p>Tomorrow cloudy, save energy!</p>
+                        <div class="alert-time">2 hours ago</div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-info">
+                    <div class="alert-icon">ℹ️</div>
+                    <div class="alert-content">
+                        <h4>Maintenance Schedule</h4>
+                        <p>Solar panel cleaning scheduled for next week</p>
+                        <div class="alert-time">1 day ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard">
+        <div class="header">
+            <div class="header-content">
+                <h1>⚙️ System Administrator Dashboard</h1>
+                <div class="user-info">
+                    <span id="adminWelcome">Welcome, Admin</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3>System Overview</h3>
+                    <div style="margin: 15px 0;">
+                        <div>Total Nodes: <strong>12</strong></div>
+                        <div>Active: <strong>11</strong></div>
+                        <div>Offline: <strong>1</strong></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 92%;"></div>
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <h3>Energy Efficiency</h3>
+                    <div class="stat-value" style="font-size: 2rem; margin: 10px 0;">87%</div>
+                    <div style="color: #4CAF50;">↑ 15% improvement</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 87%;"></div>
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <h3>Network Health</h3>
+                    <div style="margin: 15px 0;">
+                        <div>Connectivity: <strong>98%</strong></div>
+                        <div>Latency: <strong>45ms</strong></div>
+                        <div>Packet Loss: <strong>0.1%</strong></div>
+                    </div>
+                    <span class="status-badge status-charging">Excellent</span>
+                </div>
+                
+                <div class="admin-card">
+                    <h3>Maintenance Alerts</h3>
+                    <div style="margin: 15px 0;">
+                        <div style="color: #ffc107;">⚠️ 3 Pending</div>
+                        <div style="color: #dc3545;">🔧 1 Critical</div>
+                        <div style="color: #28a745;">✅ 8 Completed</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Total Generation</div>
+                        <div class="stat-icon">⚡</div>
+                    </div>
+                    <div class="stat-value">847 kWh</div>
+                    <div class="stat-subtitle">Last 24 hours across all nodes</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">System Load</div>
+                        <div class="stat-icon">📊</div>
+                    </div>
+                    <div class="stat-value">76%</div>
+                    <div class="stat-subtitle">Average capacity utilization</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Cost Savings</div>
+                        <div class="stat-icon">💰</div>
+                    </div>
+                    <div class="stat-value">₹12,450</div>
+                    <div class="stat-subtitle">Monthly savings vs grid power</div>
+                </div>
+            </div>
+            
+            <div class="alerts-section">
+                <div class="alerts-header">
+                    <h3>🛠️ System Management</h3>
+                    <span class="status-badge status-warning">4 Actions Required</span>
+                </div>
+                
+                <div class="alert-item alert-warning">
+                    <div class="alert-icon">🔧</div>
+                    <div class="alert-content">
+                        <h4>Node 7 - Inverter Efficiency Drop</h4>
+                        <p>Efficiency decreased to 78%, schedule maintenance</p>
+                        <div class="alert-time">30 minutes ago</div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-info">
+                    <div class="alert-icon">📊</div>
+                    <div class="alert-content">
+                        <h4>Weekly Report Generated</h4>
+                        <p>Performance analytics ready for review</p>
+                        <div class="alert-time">2 hours ago</div>
+                    </div>
+                </div>
+                
+                <div class="alert-item alert-warning">
+                    <div class="alert-icon">🌡️</div>
+                    <div class="alert-content">
+                        <h4>Temperature Alert - Battery Bank 3</h4>
+                        <p>Operating temperature above optimal range</p>
+                        <div class="alert-time">4 hours ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated database
+        let users = [
+            { username: 'user1', password: 'pass123', email: 'user1@example.com', type: 'user' },
+            { username: 'admin1', password: 'admin123', email: 'admin1@example.com', type: 'admin' }
+        ];
+        
+        let currentUser = null;
+        
+        // Show registration form
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+        }
+        
+        // Show login form
+        function showLogin() {
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+        
+        // Handle registration
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const userType = document.getElementById('regUserType').value;
+            
+            // Check if user already exists
+            if (users.find(user => user.username === username)) {
+                alert('Username already exists!');
+                return;
+            }
+            
+            // Add new user
+            users.push({ username, password, email, type: userType });
+            alert('Registration successful! Please login.');
+            showLogin();
+            
+            // Clear form
+            document.getElementById('registerForm').reset();
+        });
+        
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            // Find user
+            const user = users.find(u => 
+                u.username === username && 
+                u.password === password && 
+                u.type === userType
+            );
+            
+            if (user) {
+                currentUser = user;
+                
+                // Hide login page
+                document.getElementById('loginPage').style.display = 'none';
+                
+                // Show appropriate dashboard
+                if (user.type === 'admin') {
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    document.getElementById('adminWelcome').textContent = `Welcome, ${user.username}`;
+                    startAdminSimulation();
+                } else {
+                    document.getElementById('userDashboard').style.display = 'block';
+                    document.getElementById('userWelcome').textContent = `Welcome, ${user.username}`;
+                    startUserSimulation();
+                }
+                
+                // Clear form
+                document.getElementById('loginForm').reset();
+            } else {
+                alert('Invalid credentials or user type!');
+            }
+        });
+        
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+        }
+        
+        // Start user dashboard simulation
+        function startUserSimulation() {
+            // Simulate real-time data updates
+            setInterval(() => {
+                // Update solar generation
+                const solarValue = (Math.random() * 2 + 3).toFixed(1);
+                document.querySelector('#userDashboard .stat-value').textContent = solarValue + ' kW';
+                
+                // Update battery percentage
+                const batteryValue = Math.floor(Math.random() * 20 + 60);
+                document.querySelectorAll('#userDashboard .stat-value')[1].textContent = batteryValue + '%';
+                
+                // Update load
+                const loadValue = (Math.random() * 1.5 + 2.5).toFixed(1);
+                document.querySelectorAll('#userDashboard .stat-value')[2].textContent = loadValue + ' kW';
+            }, 5000);
+        }
+        
+        // Start admin dashboard simulation
+        function startAdminSimulation() {
+            setInterval(() => {
+                // Update efficiency percentage
+                const efficiency = Math.floor(Math.random() * 10 + 85);
+                document.querySelector('#adminDashboard .stat-value').textContent = efficiency + '%';
+                
+                // Update total generation
+                const generation = Math.floor(Math.random() * 100 + 800);
+                document.querySelectorAll('#adminDashboard .stat-value')[1].textContent = generation + ' kWh';
+                
+                // Update system load
+                const load = Math.floor(Math.random() * 20 + 70);
+                document.querySelectorAll('#adminDashboard .stat-value')[2].textContent = load + '%';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
